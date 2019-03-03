@@ -11,6 +11,7 @@ namespace StrategyCorps.CodeSample.Dispatchers.Registries
         public DefaultDispatchersRegistry()
         {
             For<IEntertainmentDispatcher>().Use<TheMovieDbDispatcher>();
+            For<IMovieEntertainmentDispatcher>().Use<TheMovieDbDispatcher>();
             For<IRestClient>().Use(restClient => new RestClient(ConfigurationManager.AppSettings.Get("TheMovieDbBaseUrl")));
         }
     }

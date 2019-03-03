@@ -12,6 +12,10 @@ namespace StrategyCorps.CodeSample.Dispatchers.MappingProfiles
             CreateMap<TelevisionResult, TelevisionResultDto>()
                 .ForMember(destination => destination.FirstAirDate, options => options.MapFrom(source => !string.IsNullOrWhiteSpace(source.FirstAirDate) ? DateTime.Parse(source.FirstAirDate) : (DateTime?)null));
             CreateMap<TelevisionSearchResponse, TelevisionSearchResponseDto>();
+
+            CreateMap<MovieResult, MovieResultDto>()
+                .ForMember(destination => destination.FirstAirDate, options => options.MapFrom(source => !string.IsNullOrWhiteSpace(source.FirstAirDate) ? DateTime.Parse(source.FirstAirDate) : (DateTime?)null));
+            CreateMap<MovieSearchResponse, MovieSearchResponseDto>();
         }
     }
 }

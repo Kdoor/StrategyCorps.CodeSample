@@ -70,19 +70,19 @@ namespace StrategyCorps.CodeSample.WebApi.Controllers
         }
 
         /// <summary>
-        ///     Get similar movie shows
+        ///     Get similar movies
         /// </summary>
         /// <remarks>
-        ///     Get similar movie shows
+        ///     Get similar movies
         /// </remarks>
-        /// <param name="id">movie show id</param>
+        /// <param name="id">movie id</param>
         [SwaggerResponse(HttpStatusCode.OK, "", typeof(MovieResultViewModel))]
         [SwaggerResponse(HttpStatusCode.BadRequest, "Movie id is required.")]
         [SwaggerResponse(HttpStatusCode.NotFound, "The movie id {id} was not found.")]
         [SwaggerResponse(HttpStatusCode.InternalServerError, InternalServerErrorDefaultMessage)]
         [HttpGet]
         [Route("api/movie/{id}/similar")]
-        public IHttpActionResult SimilarMovieShows(int id)
+        public IHttpActionResult SimilarMovies(int id)
         {
             if (id <= 0) return Content(HttpStatusCode.BadRequest, "Movie id is not correct");
 

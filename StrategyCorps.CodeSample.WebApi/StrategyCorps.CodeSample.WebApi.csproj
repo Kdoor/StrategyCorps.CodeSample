@@ -26,6 +26,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TargetFrameworkProfile />
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -171,6 +172,7 @@
     <Compile Include="App_Start\StructuremapWebApi.cs" />
     <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\MovieController.cs" />
     <Compile Include="Controllers\TelevisionController.cs" />
     <Compile Include="DependencyResolution\DefaultWebApiRegistry.cs" />
     <Compile Include="DependencyResolution\IoC.cs" />
@@ -183,7 +185,9 @@
     </Compile>
     <Compile Include="MappingProfiles\DefaultMappingProfile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\MovieResultViewModel.cs" />
     <Compile Include="ViewModels\TelevisionResultViewModel.cs" />
+    <Compile Include="ViewModels\MovieSearchResponseViewModel.cs" />
     <Compile Include="ViewModels\TelevisionSearchResponseViewModel.cs" />
   </ItemGroup>
   <ItemGroup>

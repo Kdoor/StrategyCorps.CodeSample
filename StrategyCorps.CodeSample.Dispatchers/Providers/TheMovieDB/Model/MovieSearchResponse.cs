@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 
 namespace StrategyCorps.CodeSample.Dispatchers.Providers.TheMovieDB.Model
 {
-    //TODO: Consider combining into an abstract class instead of POCOs may be too complex though
     public class MovieSearchResponse
     {
         [JsonProperty("results", NullValueHandling = NullValueHandling.Ignore)]

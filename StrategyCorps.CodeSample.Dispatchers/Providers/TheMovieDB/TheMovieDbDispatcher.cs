@@ -12,12 +12,13 @@ using StrategyCorps.CodeSample.Core.Exceptions;
 
 namespace StrategyCorps.CodeSample.Dispatchers.Providers.TheMovieDB
 {
-    public class TheMovieDbDispatcher : TheMovieDbDispatcherBase, IEntertainmentDispatcher
+    public class TheMovieDbDispatcher : TheMovieDbDispatcherBase, IEntertainmentDispatcher, IMovieEntertainmentDispatcher
     {
         private readonly ILogger _logger;
         private readonly IMapper _mapper;
         private readonly IRestClient _restClient;
 
+        //TODO: Consider rename to match responsibility and/or splitting dispatcher
         public TheMovieDbDispatcher(IRestClient restClient, ILogger logger, IMapper mapper)
         {
             _logger = logger;
@@ -117,5 +118,103 @@ namespace StrategyCorps.CodeSample.Dispatchers.Providers.TheMovieDB
                     throw new StrategyCorpsException("There was a problem calling The Movie Db.", ErrorCode.Unknown, null);
             }
         }
+
+
+
+
+
+        /// <summary>
+        /// Gets movies that meet the query criteria
+        /// </summary>
+        /// <param name="query">The criteria used to search for movies</param>
+        /// <returns cref="MovieSearchResponseDto"></returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="StrategyCorpsException"></exception>
+        /// <exception cref="Exception"></exception>
+        public MovieSearchResponseDto GetMoviesByQuery(string query)
+        {
+            if (string.IsNullOrWhiteSpace(query)) throw new ArgumentNullException(nameof(query), "The search query is required.");
+            IRestResponse response;
+
+            var queryString = $"api_key={TheMovieDbApiKey}&query={query}";
+
+            var request = new RestRequest
+            {
+                Method = Method.GET,
+                Resource = $"3/search/movie?{queryString}",
+                RequestFormat = DataFormat.Json
+            };
+
+            try
+            {
+                _restClient.BaseUrl = new Uri(TheMovieDbBaseUrl);
+
+                response = _restClient.Execute(request);
+            }
+            catch (Exception exception)
+            {
+                _logger.Error(exception);
+                throw;
+            }
+
+            return MapGetMoviesResponse(response);
+        }
+
+        /// <summary>
+        /// Gets movies that are similar to the movie whose id is passed in.
+        /// </summary>
+        /// <param name="id">The id of the movie used to find similar movies. </param>
+        /// <returns cref="MovieSearchResponseDto"></returns>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="StrategyCorpsException"></exception>
+        /// <exception cref="Exception"></exception>
+        public MovieSearchResponseDto GetSimilarMoviesById(int id)
+        {
+            if (id <= 0) throw new ArgumentException("The id  must be greater than 0.", nameof(id));
+
+            IRestResponse response;
+
+            var request = new RestRequest
+            {
+                Method = Method.GET,
+                Resource = $"3/movie/{id}/similar?api_key={TheMovieDbApiKey}",
+                RequestFormat = DataFormat.Json
+            };
+
+            try
+            {
+                _restClient.BaseUrl = new Uri(TheMovieDbBaseUrl);
+
+                response = _restClient.Execute(request);
+            }
+            catch (Exception exception)
+            {
+                _logger.Error(exception);
+                throw;
+            }
+
+            return MapGetMoviesResponse(response);
+        }
+
+        /// <summary>
+        /// Maps the rest response from the get movies request
+        /// </summary>
+        /// <param name="response" cref="IRestResponse">The rest response from the rest request. </param>
+        /// <returns cref="MovieSearchResponseDto"></returns>
+        /// <exception cref="StrategyCorpsException"></exception>
+        private MovieSearchResponseDto MapGetMoviesResponse(IRestResponse response)
+        {
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    var movieSearchResponse = JsonConvert.DeserializeObject<MovieSearchResponse>(response.Content);
+                    return _mapper.Map<MovieSearchResponse, MovieSearchResponseDto>(movieSearchResponse);
+                case HttpStatusCode.NotFound:
+                    return null;
+                default:
+                    throw new StrategyCorpsException("There was a problem calling The Movie Db.", ErrorCode.Unknown, null);
+            }
+        }
+
     }
 }
