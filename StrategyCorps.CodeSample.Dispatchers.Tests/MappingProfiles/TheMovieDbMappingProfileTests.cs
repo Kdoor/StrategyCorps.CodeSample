@@ -16,6 +16,8 @@ namespace StrategyCorps.CodeSample.Dispatchers.Tests.MappingProfiles
     {
         private IMapper _mapper;
 
+        //TODO: Consider adding test categories
+
         [SetUp]
         public void SetUp()
         {
@@ -80,6 +82,63 @@ namespace StrategyCorps.CodeSample.Dispatchers.Tests.MappingProfiles
                                                                    .With(x => x.VoteCount = televisionResult.VoteCount).Build();
 
             var actualResult = _mapper.Map<TelevisionResult, TelevisionResultDto>(televisionResult);
+
+            actualResult.ToExpectedObject().ShouldEqual(expectedResult);
+        }
+
+
+        
+        [Test]
+        public void DefaultMappingProfile_When_MovieSearchResponse_Returns_MovieSearchResponseDTO()
+        {
+            var currentDateTime = DateTime.Now;
+            var zeroSecondDate = currentDateTime.AddSeconds(-currentDateTime.Second);
+
+            var movieResults = Builder<MovieResult>.CreateListOfSize(5).All()
+                .With(x => x.FirstAirDate = zeroSecondDate.ToString(CultureInfo.InvariantCulture)).Build().ToList();
+            var movieSearchResponse = Builder<MovieSearchResponse>.CreateNew()
+                                                                                  .With(x => x.Results = movieResults).Build();
+
+            var movieResultsDto = movieResults.Select(movieResult => new MovieResultDto
+            {
+                FirstAirDate = DateTime.Parse(movieResult.FirstAirDate),
+                Id = movieResult.Id,
+                Title = movieResult.Title,
+                OriginalLanguage = movieResult.OriginalLanguage,
+                OriginalTitle = movieResult.OriginalTitle,
+                Overview = movieResult.Overview,
+                Popularity = movieResult.Popularity,
+                VoteAverage = movieResult.VoteAverage,
+                VoteCount = movieResult.VoteCount
+            }).ToList();
+
+            var expectedResult = Builder<MovieSearchResponseDto>.CreateNew()
+                                                                           .With(x => x.Page = movieSearchResponse.Page)
+                                                                           .With(x => x.TotalPages = movieSearchResponse.TotalPages)
+                                                                           .With(x => x.TotalResults = movieSearchResponse.TotalResults)
+                                                                           .With(x => x.Results = movieResultsDto).Build();
+
+            var actualResult = _mapper.Map<MovieSearchResponse, MovieSearchResponseDto>(movieSearchResponse);
+
+            actualResult.ToExpectedObject().ShouldEqual(expectedResult);
+        }
+
+        [Test]
+        public void DefaultMappingProfile_When_MovieResult_Returns_MovieResultDTO()
+        {
+            var movieResult = Builder<MovieResult>.CreateNew().With(x => x.FirstAirDate = DateTime.Now.ToString(CultureInfo.InvariantCulture)).Build();
+            var expectedResult = Builder<MovieResultDto>.CreateNew()
+                                                                   .With(x => x.OriginalLanguage = movieResult.OriginalLanguage)
+                                                                   .With(x => x.FirstAirDate = DateTime.Parse(movieResult.FirstAirDate))
+                                                                   .With(x => x.Id = movieResult.Id)
+                                                                   .With(x => x.Title = movieResult.Title)
+                                                                   .With(x => x.OriginalTitle = movieResult.OriginalTitle)
+                                                                   .With(x => x.Overview = movieResult.Overview)
+                                                                   .With(x => x.Popularity = movieResult.Popularity)
+                                                                   .With(x => x.VoteAverage = movieResult.VoteAverage)
+                                                                   .With(x => x.VoteCount = movieResult.VoteCount).Build();
+
+            var actualResult = _mapper.Map<MovieResult, MovieResultDto>(movieResult);
 
             actualResult.ToExpectedObject().ShouldEqual(expectedResult);
         }

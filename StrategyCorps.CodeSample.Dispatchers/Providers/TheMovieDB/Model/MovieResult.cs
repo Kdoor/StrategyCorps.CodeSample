@@ -37,10 +37,10 @@ namespace StrategyCorps.CodeSample.Dispatchers.Providers.TheMovieDB.Model
         [JsonProperty("vote_count", NullValueHandling = NullValueHandling.Ignore)]
         public int VoteCount { get; set; }
 
-        [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
-        public string Name { get; set; }
+        [JsonProperty("title", NullValueHandling = NullValueHandling.Ignore)]
+        public string Title { get; set; }
 
-        [JsonProperty("original_name", NullValueHandling = NullValueHandling.Ignore)]
-        public string OriginalName { get; set; }
+        [JsonProperty("original_title", NullValueHandling = NullValueHandling.Ignore)]
+        public string OriginalTitle { get; set; }
     }
 }

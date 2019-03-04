@@ -41,13 +41,13 @@
         public int VoteCount { get; set; }
 
         /// <summary>
-        /// Name
+        /// Title
         /// </summary>
-        public string Name { get; set; }
+        public string Title { get; set; }
 
         /// <summary>
-        /// OriginalName
+        /// OriginalTitle
         /// </summary>
-        public string OriginalName { get; set; }
+        public string OriginalTitle { get; set; }
     }
 }

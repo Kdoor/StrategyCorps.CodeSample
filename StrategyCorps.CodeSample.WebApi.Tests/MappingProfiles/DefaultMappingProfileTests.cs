@@ -77,5 +77,57 @@ namespace StrategyCorps.CodeSample.WebApi.Tests.MappingProfiles
 
             actualResult.ToExpectedObject().ShouldEqual(expectedResult);
         }
+
+
+        [Test]
+        public void DefaultMappingProfile_When_MovieSearchResponseDTO_Returns_MovieSearchResponseViewModel()
+        {
+            var movieResultsDto = Builder<MovieResultDto>.CreateListOfSize(5).Build().ToList();
+            var movieSearchResponseDto = Builder<MovieSearchResponseDto>.CreateNew()
+                .With(x => x.Results = movieResultsDto).Build();
+
+            var movieResultsViewModel = movieResultsDto.Select(movieResultDto => new MovieResultViewModel
+            {
+                FirstAirDate = movieResultDto.FirstAirDate.ToString(),
+                Id = movieResultDto.Id,
+                Title = movieResultDto.Title,
+                OriginalLanguage = movieResultDto.OriginalLanguage,
+                OriginalTitle = movieResultDto.OriginalTitle,
+                Overview = movieResultDto.Overview,
+                Popularity = movieResultDto.Popularity,
+                VoteAverage = movieResultDto.VoteAverage,
+                VoteCount = movieResultDto.VoteCount
+            }).ToList();
+
+            var expectedResult = Builder<MovieSearchResponseViewModel>.CreateNew()
+                .With(x => x.Page = movieSearchResponseDto.Page)
+                .With(x => x.TotalPages = movieSearchResponseDto.TotalPages)
+                .With(x => x.TotalResults = movieSearchResponseDto.TotalResults)
+                .With(x => x.Results = movieResultsViewModel).Build();
+
+            var actualResult = _mapper.Map<MovieSearchResponseDto, MovieSearchResponseViewModel>(movieSearchResponseDto);
+
+            actualResult.ToExpectedObject().ShouldEqual(expectedResult);
+        }
+
+        [Test]
+        public void DefaultMappingProfile_When_MovieResultDTO_Returns_MovieResultViewModel()
+        {
+            var movieResultDto = Builder<MovieResultDto>.CreateNew().Build();
+            var expectedResult = Builder<MovieResultViewModel>.CreateNew()
+                .With(x => x.OriginalLanguage = movieResultDto.OriginalLanguage)
+                .With(x => x.FirstAirDate = movieResultDto.FirstAirDate.ToString())
+                .With(x => x.Id = movieResultDto.Id)
+                .With(x => x.Title = movieResultDto.Title)
+                .With(x => x.OriginalTitle = movieResultDto.OriginalTitle)
+                .With(x => x.Overview = movieResultDto.Overview)
+                .With(x => x.Popularity = movieResultDto.Popularity)
+                .With(x => x.VoteAverage = movieResultDto.VoteAverage)
+                .With(x => x.VoteCount = movieResultDto.VoteCount).Build();
+
+            var actualResult = _mapper.Map<MovieResultDto, MovieResultViewModel>(movieResultDto);
+
+            actualResult.ToExpectedObject().ShouldEqual(expectedResult);
+        }
     }
 }

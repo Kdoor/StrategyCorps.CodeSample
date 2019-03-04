@@ -18,8 +18,8 @@ namespace StrategyCorps.CodeSample.Models
 
         public int VoteCount { get; set; }
 
-        public string Name { get; set; }
+        public string Title { get; set; }
 
-        public string OriginalName { get; set; }
+        public string OriginalTitle { get; set; }
     }
 }
